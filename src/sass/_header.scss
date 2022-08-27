@@ -1,0 +1,27 @@
+.search_header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #4169E1;
+    min-height: 50px;
+}
+
+.search_input{
+    min-width: 500px;
+    height: 40px;
+    border: none;
+}
+
+.search_btn{
+    height: 40px;
+    width: 40px;
+    border: none;
+    margin: 0;
+}
+
+.search-form{
+    display: flex;
+    height: 40px;
+    margin: 0;
+}
+
