@@ -1,0 +1,2 @@
+const e=document.querySelector(".search_input"),t=document.querySelector(".search_btn"),a=(document.querySelector(".gallery"),async()=>{const t=e.value.trim(),a=await fetch(`https://pixabay.com/api/?key=29544011-a26ad759f9849933fa3601a5e&q=${t}&image_type=photo&orientation=horizontal&safesearch=true`);return await a.json()});a().then((e=>e.json())).catch((e=>console.log(e)));t.addEventListener("click",(e=>{e.preventDefault(),a(),console.log(a)}));
+//# sourceMappingURL=index.0f74fabb.js.map
