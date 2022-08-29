@@ -2,25 +2,31 @@ const input = document.querySelector('.search_input');
 const inputBtn = document.querySelector('.search_btn');
 const gallery = document.querySelector('.gallery');
 
-const fetchImages = (name) => {
-    return fetch(
-      `https://pixabay.com/api/?key=29544011-a26ad759f9849933fa3601a5e=${name}&image_type=photo&orientation=horizontal&safesearch=true`
-    ).then(response => {
-      if (!response.ok) {
-        throw new Error(
-          'Sorry, there are no images matching your search query. Please try again.'
-        );
-      }
-      return response.json();
-    });
-}
+const fetchImages = async () => {
+  const token = '29544011-a26ad759f9849933fa3601a5e';
+  const imageType = 'photo';
+  const orientation = 'horizontal';
+  const safeSearch = true;
+  const inputValue = input.value.trim();
 
-const formatName = () => {
-    const inputValue = input.value.trim();
-    console.log(inputValue);
-}
+  const response = await fetch(
+    `https://pixabay.com/api/?key=${token}&q=${inputValue}&image_type=${imageType}&orientation=${orientation}&safesearch=${safeSearch}`
+  );
+  const images = await response.json();
+  //console.log(images);
+  return images;
+};
 
-inputBtn.addEventListener('click', (event) => {
-    event.preventDefault();
-    formatName();
-})
+fetchImages()
+  .then(images => images.json())
+  .catch(Error => console.log(Error));
+
+const addGallery = () => {
+  console.log(fetchImages);
+};
+
+inputBtn.addEventListener('click', event => {
+  event.preventDefault();
+  fetchImages();
+  addGallery();
+});
