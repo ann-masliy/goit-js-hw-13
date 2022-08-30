@@ -8,25 +8,61 @@ const fetchImages = async () => {
   const orientation = 'horizontal';
   const safeSearch = true;
   const inputValue = input.value.trim();
+  const baseUrl = `https://pixabay.com/api/?key=${token}&q=${inputValue}&image_type=${imageType}&orientation=${orientation}&safesearch=${safeSearch}&page=1&per_page=40`;
+  const array = [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+    22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+  ];
 
-  const response = await fetch(
-    `https://pixabay.com/api/?key=${token}&q=${inputValue}&image_type=${imageType}&orientation=${orientation}&safesearch=${safeSearch}`
-  );
-  const images = await response.json();
-  //console.log(images);
+  const arrayOfImages = array.map(async array => {
+    const response = await fetch(`${baseUrl}`);
+    return response.json();
+  });
+  // const response = await fetch(`${baseUrl}`);
+  // const arrayOfImages = await response.json();
+
+  // return arrayOfImages;
+  const images = await Promise.all(arrayOfImages);
+  console.log(images);
   return images;
 };
 
-fetchImages()
-  .then(images => images.json())
-  .catch(Error => console.log(Error));
-
-const addGallery = () => {
-  console.log(fetchImages);
+const renderImages = images => {
+  const markup = images
+    .map(
+      image => `<div class="photo-card">
+  <img src="${image.webformatURL}" alt="${image.tags}" loading="lazy" />
+  <div class="info">
+    <p class="info-item">
+      <b>Likes ${image.like}</b>
+    </p>
+    <p class="info-item">
+      <b>Views ${image.views}</b>
+    </p>
+    <p class="info-item">
+      <b>Comments ${image.comments}</b>
+    </p>
+    <p class="info-item">
+      <b>Downloads ${image.downloads}</b>
+    </p>
+  </div>
+</div>`
+    )
+    .join('');
+  gallery.innerHTML = markup;
 };
 
-inputBtn.addEventListener('click', event => {
+fetchImages()
+  .then(images => images)
+  .catch(Error => console.log(Error));
+
+inputBtn.addEventListener('click', async event => {
   event.preventDefault();
-  fetchImages();
-  addGallery();
+
+  try {
+    const array = await fetchImages();
+    renderImages(array);
+  } catch (error) {
+    console.log(error.message);
+  }
 });
