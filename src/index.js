@@ -7,6 +7,7 @@ const input = document.querySelector('.search_input');
 const inputBtn = document.querySelector('.search_btn');
 const gallery = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
+const test = document.querySelector('.test');
 
 let page = 1;
 const token = '29544011-a26ad759f9849933fa3601a5e';
