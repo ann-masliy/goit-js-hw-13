@@ -1,48 +1,40 @@
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+import debounce from 'lodash';
+import Notiflix from 'notiflix';
+
 const input = document.querySelector('.search_input');
 const inputBtn = document.querySelector('.search_btn');
 const gallery = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
 
 let page = 1;
+const token = '29544011-a26ad759f9849933fa3601a5e';
+const imageType = 'photo';
+const orientation = 'horizontal';
+const safeSearch = true;
 
-const fetchImages = async () => {
-  const token = '29544011-a26ad759f9849933fa3601a5e';
-  const imageType = 'photo';
-  const orientation = 'horizontal';
-  const safeSearch = true;
-  const inputValue = input.value.trim();
-  const baseUrl = `https://pixabay.com/api/?key=${token}&q=${inputValue}&image_type=${imageType}&orientation=${orientation}&safesearch=${safeSearch}&page=${page}&per_page=40`;
+const lightbox = new SimpleLightbox('.gallery a');
 
-  // const arrayOfImages = array.map(async array => {
-  //   const response = await fetch(`${baseUrl}`);
-  //   return response.json();
-  // });
+loadMoreBtn.setAttribute('hidden', 'hidden');
+
+const fetchImages = async (input, pageNumber) => {
+  const baseUrl = `https://pixabay.com/api/?key=${token}&q=${input}&image_type=${imageType}&orientation=${orientation}&safesearch=${safeSearch}&page=${pageNumber}&per_page=40`;
+
   const response = await fetch(`${baseUrl}`);
   const responseObject = await response.json();
-  const arrayImages = [];
-  responseObject.hits.forEach(async image => {
-    arrayImages.push(image);
-    // console.log(image);
-  });
-  // zmienna.hits.forEach(image => {
-  //   console.log(image);
-  // });
-  console.log(Array.isArray(arrayImages));
-  console.log(arrayImages);
-  // console.log(responseObject);
 
-  return arrayImages;
-
-  // const images = await Promise.all(arrayOfImages);
-  // console.log(images);
-  // return images;
+  loadMoreBtn.removeAttribute('hidden');
+  return responseObject;
 };
 
 const renderImages = images => {
   const markup = images
     .map(
       image => `<div class="photo-card">
-  <img src="${image.webformatURL}" alt="${image.tags}" loading="lazy" />
+  <a href='${image.largeImageURL}>
+    <img src="${image.webformatURL}" alt="${image.tags}" loading="lazy" />
+  </a>
   <div class="info">
     <p class="info-item">
       <b>Likes</b> ${image.likes}
@@ -60,32 +52,55 @@ const renderImages = images => {
 </div>`
     )
     .join('');
-  gallery.innerHTML = markup;
+
+  if (page === 1) {
+    gallery.innerHTML = markup;
+  } else {
+    gallery.insertAdjacentHTML('beforeend', markup);
+  }
   return page++;
 };
-
-fetchImages()
-  .then(images => {
-    renderImages(images);
-    //page += 1;
-  })
-  .catch(Error => console.log(Error));
 
 inputBtn.addEventListener('click', async event => {
   event.preventDefault();
 
+  page = 1;
+  const inputValue = input.value.trim();
+
   try {
-    const array = await fetchImages();
-    renderImages(array);
+    const array = await fetchImages(inputValue, page);
+    const arrayImages = [];
+    array.hits.forEach(async image => {
+      arrayImages.push(image);
+    });
+
+    const total = await array.totalHits;
+
+    if (total > 0) {
+      Notiflix.Notify.success(`Hooray! We found ${total} images.`);
+    }
+    if (total === 0) {
+      throw new Error();
+    }
+    renderImages(arrayImages);
+    lightbox.refresh();
   } catch (error) {
-    console.log(error.message);
+    gallery.innerHTML = '';
+    Notiflix.Notify.failure(
+      'Sorry, there are no images matching your search query. Please try again.'
+    );
   }
 });
 
-loadMoreBtn.addEventListener('click', async()=> {
+loadMoreBtn.addEventListener('click', async () => {
+  const inputValue = input.value.trim();
   try {
-    const array = await fetchImages();
-    renderImages(array);
+    const array = await fetchImages(inputValue, page);
+    const arrayImages = [];
+    array.hits.forEach(async image => {
+      arrayImages.push(image);
+    });
+    renderImages(arrayImages);
   } catch (error) {
     console.log(error.message);
   }
