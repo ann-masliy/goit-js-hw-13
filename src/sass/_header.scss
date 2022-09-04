@@ -73,3 +73,75 @@ img {
   align-items: center;
   max-width: 1558px;
 }
+
+.load-more {
+  display: flex;
+  margin: 0 auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 10px 45px;
+  text-decoration: none;
+  font-family: 'Poppins', sans-serif;
+  font-size: 40px;
+  color: white;
+  background: #6225e6;
+  transition: 1s;
+  box-shadow: 6px 6px 0 black;
+  transform: skewX(-15deg);
+}
+
+.load-more:focus {
+  outline: none;
+}
+
+.load-more:hover {
+  transition: 0.5s;
+  box-shadow: 10px 10px 0 #fbc638;
+}
+
+.load-more span:nth-child(2) {
+  transition: 0.5s;
+  margin-right: 0px;
+}
+
+.load-more:hover span:nth-child(2) {
+  transition: 0.5s;
+  margin-right: 45px;
+}
+
+span {
+  transform: skewX(15deg);
+}
+
+span:nth-child(2) {
+  width: 20px;
+  margin-left: 30px;
+  position: relative;
+  top: 12%;
+}
+
+/**************SVG****************/
+
+path.one {
+  transition: 0.4s;
+  transform: translateX(-60%);
+}
+
+path.two {
+  transition: 0.5s;
+  transform: translateX(-30%);
+}
+
+.load-more:hover path.three {
+  animation: color_anim 1s infinite 0.2s;
+}
+
+.load-more:hover path.one {
+  transform: translateX(0%);
+  animation: color_anim 1s infinite 0.6s;
+}
+
+.load-more:hover path.two {
+  transform: translateX(0%);
+  animation: color_anim 1s infinite 0.4s;
+}
