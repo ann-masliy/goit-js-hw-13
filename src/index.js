@@ -32,7 +32,7 @@ const renderImages = images => {
   const markup = images
     .map(
       image => `<div class="photo-card">
-  <a href='${image.largeImageURL}>
+  <a href='${image.largeImageURL}'>
     <img src="${image.webformatURL}" alt="${image.tags}" loading="lazy" />
   </a>
   <div class="info">
@@ -101,6 +101,7 @@ loadMoreBtn.addEventListener('click', async () => {
       arrayImages.push(image);
     });
     renderImages(arrayImages);
+    lightbox.refresh();
   } catch (error) {
     console.log(error.message);
   }
