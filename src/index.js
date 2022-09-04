@@ -1,6 +1,7 @@
 const input = document.querySelector('.search_input');
 const inputBtn = document.querySelector('.search_btn');
 const gallery = document.querySelector('.gallery');
+const loadMoreBtn = document.querySelector('.load-more');
 
 let page = 1;
 
@@ -60,18 +61,28 @@ const renderImages = images => {
     )
     .join('');
   gallery.innerHTML = markup;
+  return page++;
 };
 
 fetchImages()
   .then(images => {
     renderImages(images);
-    page += 1;
+    //page += 1;
   })
   .catch(Error => console.log(Error));
 
 inputBtn.addEventListener('click', async event => {
   event.preventDefault();
 
+  try {
+    const array = await fetchImages();
+    renderImages(array);
+  } catch (error) {
+    console.log(error.message);
+  }
+});
+
+loadMoreBtn.addEventListener('click', async()=> {
   try {
     const array = await fetchImages();
     renderImages(array);
